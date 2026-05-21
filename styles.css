@@ -1,0 +1,435 @@
+/* ==========================================================================
+   Aether Design System - Modern Minimalist SaaS Hero
+   ========================================================================== */
+
+/* Design Tokens & Custom Variables */
+:root {
+    /* Color Palette */
+    --color-bg: #E8EDF2;
+    --color-primary-text: #1E2D3D;
+    --color-accent-text: #547A95;
+    
+    /* CTA Styles */
+    --color-cta-primary: #1E2D3D;
+    --color-cta-primary-hover: #2F445B;
+    --color-cta-primary-text: #FFFFFF;
+    
+    --color-cta-secondary-border: rgba(30, 45, 61, 0.15);
+    --color-cta-secondary-hover-bg: rgba(30, 45, 61, 0.04);
+    
+    /* Cards & Decorative */
+    --color-image-border: #FFFFFF;
+    --shadow-premium: 0 20px 40px -15px rgba(84, 122, 149, 0.15), 
+                      0 0 0 1px rgba(84, 122, 149, 0.08);
+    --shadow-premium-hover: 0 30px 50px -20px rgba(84, 122, 149, 0.25), 
+                            0 0 0 1px rgba(84, 122, 149, 0.12);
+    
+    /* Typography */
+    --font-primary: 'Open Sans', 'Roboto Condensed', sans-serif;
+    --font-fallback: 'Roboto Condensed', sans-serif;
+    
+    /* Animation Speeds */
+    --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-primary-text);
+    font-family: var(--font-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    padding: 2rem 0;
+}
+
+/* 
+   Narrow Centered Layout Container 
+   Constraints layout strictly between 600px and 780px for a premium aesthetic 
+*/
+.landing-container {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 85vh;
+}
+
+/* Minimal Brand Header */
+.minimal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0 3rem 0;
+    opacity: 0;
+    animation: fadeInDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.logo-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-accent-text);
+    border-radius: 50%;
+    display: inline-block;
+    transition: var(--transition-smooth);
+}
+
+.brand-logo:hover .logo-dot {
+    transform: scale(1.4);
+    background-color: var(--color-primary-text);
+}
+
+.logo-text {
+    font-family: var(--font-fallback);
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.05em;
+    color: var(--color-primary-text);
+    text-transform: uppercase;
+}
+
+.minimal-nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-accent-text);
+    transition: var(--transition-smooth);
+    position: relative;
+    padding: 0.2rem 0;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background-color: var(--color-primary-text);
+    transition: var(--transition-smooth);
+}
+
+.nav-link:hover {
+    color: var(--color-primary-text);
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* Hero Section */
+.hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* 1. Heading - Large, Bold, Communicates Value */
+.hero-heading {
+    font-size: clamp(2rem, 4.5vw, 3.1rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    color: var(--color-primary-text);
+    margin-bottom: 1.25rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.2s;
+}
+
+/* 2. Subheading - Accent Typography Color, Lighter & Smaller */
+.hero-subheading {
+    font-size: clamp(0.95rem, 2vw, 1.05rem);
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--color-accent-text);
+    max-width: 580px;
+    margin-bottom: 3.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.4s;
+}
+
+/* 3. Central Image - Soft edges, modern card-like appearance */
+.hero-image-container {
+    width: 100%;
+    margin-bottom: 3.5rem;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.6s;
+}
+
+.image-wrapper {
+    position: relative;
+    border-radius: 20px;
+    background-color: var(--color-image-border);
+    padding: 8px; /* Clean physical border frame look */
+    box-shadow: var(--shadow-premium);
+    transition: var(--transition-smooth);
+    overflow: hidden;
+    cursor: pointer;
+    animation: floatingFloat 6s ease-in-out infinite alternate;
+}
+
+/* Double overlay reflection shine on hover */
+.image-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        rgba(255,255,255,0) 0%, 
+        rgba(255,255,255,0.3) 50%, 
+        rgba(255,255,255,0) 100%
+    );
+    transform: skewX(-20deg);
+    transition: all 0.75s ease;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.image-wrapper:hover::before {
+    left: 150%;
+}
+
+.image-wrapper:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: var(--shadow-premium-hover);
+}
+
+.hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    display: block;
+    object-fit: cover;
+    transition: var(--transition-smooth);
+}
+
+/* 4. CTA Buttons - Rounded Pill-shaped, Soft hover */
+.hero-ctas {
+    display: flex;
+    gap: 1.25rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 0.8s;
+}
+
+.cta-button {
+    font-family: var(--font-primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.9rem 2.2rem;
+    border-radius: 9999px; /* Pill-shaped / fully rounded corners */
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    outline: none;
+}
+
+/* Primary CTA styling: prominent solid fill */
+.primary-cta {
+    background-color: var(--color-cta-primary);
+    color: var(--color-cta-primary-text);
+    box-shadow: 0 4px 12px rgba(30, 45, 61, 0.1);
+}
+
+.primary-cta:hover {
+    background-color: var(--color-cta-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(30, 45, 61, 0.18);
+}
+
+.primary-cta:active {
+    transform: translateY(0);
+}
+
+/* Secondary CTA styling: subtle outline style */
+.secondary-cta {
+    background-color: transparent;
+    color: var(--color-primary-text);
+    border: 1px solid var(--color-cta-secondary-border);
+}
+
+.secondary-cta:hover {
+    background-color: var(--color-cta-secondary-hover-bg);
+    border-color: var(--color-primary-text);
+    transform: translateY(-2px);
+}
+
+.secondary-cta:active {
+    transform: translateY(0);
+}
+
+/* Minimal Footer */
+.minimal-footer {
+    padding: 3rem 0 1.5rem 0;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards 1s;
+}
+
+.footer-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-accent-text);
+    opacity: 0.8;
+}
+
+/* 
+   Toast Notification Styling (Glassmorphism design)
+*/
+.toast-notification {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translate(-50%, 100px);
+    z-index: 1000;
+    background: rgba(30, 45, 61, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 1.8rem;
+    border-radius: 9999px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+}
+
+.toast-notification.show {
+    transform: translate(-50%, 0);
+}
+
+.toast-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.toast-icon {
+    font-size: 1.1rem;
+}
+
+.toast-message {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #FFFFFF;
+    white-space: nowrap;
+    letter-spacing: -0.01em;
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* High-end floating effect for central card */
+@keyframes floatingFloat {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-8px);
+    }
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+
+@media (max-width: 600px) {
+    body {
+        padding: 1rem 0;
+    }
+    .landing-container {
+        padding: 0 1.25rem;
+        min-height: auto;
+    }
+    .minimal-header {
+        padding: 1rem 0 2rem 0;
+    }
+    .hero-heading {
+        margin-bottom: 1rem;
+    }
+    .hero-subheading {
+        margin-bottom: 2.5rem;
+    }
+    .hero-image-container {
+        margin-bottom: 2.5rem;
+    }
+    .hero-ctas {
+        flex-direction: column;
+        gap: 0.85rem;
+    }
+    .cta-button {
+        width: 100%;
+        text-align: center;
+        padding: 0.85rem 1.75rem;
+    }
+    .minimal-footer {
+        padding: 2rem 0 1rem 0;
+    }
+}
