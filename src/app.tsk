@@ -1,0 +1,201 @@
+import { useState } from 'react'
+import type { FormEvent } from 'react'
+import './App.css'
+
+type ChatMessage = {
+  id: string
+  role: 'user' | 'model'
+  text: string
+}
+
+const agentApiUrl = import.meta.env.VITE_AGENT_API_URL || 'http://127.0.0.1:8787'
+
+const suggestions = [
+  { icon: 'IMG', label: 'Create image', prompt: 'Give me a creative image prompt.' },
+  { icon: 'MUS', label: 'Create music', prompt: 'Help me make a short song idea.' },
+  { icon: 'DAY', label: 'Boost my day', prompt: 'Give me a quick positive plan for today.' },
+  { icon: 'LEARN', label: 'Help me learn', prompt: 'Teach me one useful concept simply.' },
+  { icon: 'WRITE', label: 'Write anything', prompt: 'Help me write a short paragraph.' },
+]
+
+function App() {
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [prompt, setPrompt] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const hasMessages = messages.length > 0
+
+  async function sendPrompt(nextPrompt: string) {
+    const trimmedPrompt = nextPrompt.trim()
+
+    if (!trimmedPrompt || isLoading) {
+      return
+    }
+
+    const userMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: 'user',
+      text: trimmedPrompt,
+    }
+
+    const nextMessages = [...messages, userMessage]
+    setMessages(nextMessages)
+    setPrompt('')
+    setError('')
+    setIsLoading(true)
+
+    try {
+      const response = await fetch(`${agentApiUrl}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ messages: nextMessages }),
+      })
+
+      const data = (await response.json()) as { reply?: string; error?: string }
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Agent request failed.')
+      }
+
+      const reply = data.reply?.trim() || 'I could not generate a response.'
+
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          id: crypto.randomUUID(),
+          role: 'model',
+          text: reply,
+        },
+      ])
+    } catch (caughtError) {
+      setError(caughtError instanceof Error ? caughtError.message : 'Something went wrong.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    void sendPrompt(prompt)
+  }
+
+  return (
+    <main className="phone-screen" aria-label="Gemini chatbot">
+      <header className="status-bar" aria-label="Phone status">
+        <div className="status-left">
+          <span>11:50</span>
+          <span className="tiny-dot" />
+          <span className="tiny-badge">S</span>
+        </div>
+        <div className="status-right">
+          <span>5G+</span>
+          <span className="signal">|||</span>
+          <span className="battery" />
+        </div>
+      </header>
+
+      <nav className="top-bar" aria-label="Primary">
+        <button className="icon-button menu-button" aria-label="Open menu">
+          <span />
+          <span />
+          <span />
+        </button>
+        <h1>Gemini</h1>
+        <button className="avatar-button" aria-label="Profile">
+          m
+        </button>
+      </nav>
+
+      <section className={hasMessages ? 'chat-thread' : 'home-content'}>
+        {!hasMessages ? (
+          <>
+            <div className="hero-copy" aria-label="Greeting">
+              <p>Hi</p>
+              <h2>I'm ready to help you plan, study, bring ideas to life & more.</h2>
+            </div>
+
+            <div className="suggestions" aria-label="Suggestions">
+              {suggestions.map((item) => (
+                <button
+                  className="suggestion-chip"
+                  key={item.label}
+                  onClick={() => void sendPrompt(item.prompt)}
+                  type="button"
+                >
+                  <span aria-hidden="true">{item.icon}</span>
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="messages" aria-live="polite">
+            {messages.map((message) => (
+              <article className={`message ${message.role}`} key={message.id}>
+                {message.text}
+              </article>
+            ))}
+            {isLoading ? <article className="message model thinking">Thinking...</article> : null}
+          </div>
+        )}
+
+        {error ? <p className="error-message">{error}</p> : null}
+      </section>
+
+      <form className="composer" aria-label="Ask Gemini" onSubmit={handleSubmit}>
+        <label className="sr-only" htmlFor="prompt">
+          Ask Gemini
+        </label>
+        <input
+          autoComplete="off"
+          disabled={isLoading}
+          id="prompt"
+          onChange={(event) => setPrompt(event.target.value)}
+          placeholder="Ask Gemini"
+          type="text"
+          value={prompt}
+        />
+
+        <div className="composer-actions">
+          <div className="left-actions">
+            <button className="flat-icon" type="button" aria-label="Add">
+              +
+            </button>
+            <button className="sliders-button" type="button" aria-label="Tools">
+              <span />
+              <span />
+            </button>
+          </div>
+
+          <div className="right-actions">
+            <button className="flash-button" type="button">
+              Agent
+            </button>
+            <button className="round-button" type="button" aria-label="Use microphone">
+              <span className="mic-icon" />
+            </button>
+            <button
+              className="voice-button"
+              disabled={isLoading || !prompt.trim()}
+              type="submit"
+              aria-label="Send prompt"
+            >
+              <span className="bars">
+                <i />
+                <i />
+                <i />
+              </span>
+              <span className="sparkle">*</span>
+            </button>
+          </div>
+        </div>
+        <div className="home-indicator" />
+      </form>
+    </main>
+  )
+}
+
+export default App
